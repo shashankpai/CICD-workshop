@@ -198,6 +198,12 @@ spec:
         - key: .dockerconfigjson
           path: config.json
 ```
+apply the manifest
+
+```
+kubectl apply -f example-01.yaml 
+pod/kaniko created
+```
 
 check the logs 
 
