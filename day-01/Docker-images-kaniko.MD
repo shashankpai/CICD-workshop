@@ -172,4 +172,87 @@ kubectl create secret docker-registry regcred --docker-server=<your-registry-ser
 kubectl create secret docker-registry regcred --docker-server=https://index.docker.io/v1/ --docker-username=shapai --docker-password=<your-pword> --docker-email=<your-email>
 ```
 
+Push images to registry by running th kaniko pod 
 
+```apiVersion: v1
+kind: Pod
+metadata:
+  name: kaniko
+spec:
+  containers:
+  - name: kaniko
+    image: gcr.io/kaniko-project/executor:latest
+    args:
+    - "--dockerfile=day-01/Dockerfile"
+    - "--context=git://github.com/shashankpai/CICD-workshop.git" #git://github.com/shashankpai/CICD-workshop.git#refs/heads/master
+    - "--destination=shapai/kaniko-demo-image:latest"
+    volumeMounts:
+    - name: kaniko-secret
+      mountPath: /kaniko/.docker
+  restartPolicy: Never
+  volumes:
+  - name: kaniko-secret
+    secret:
+      secretName: regcred
+      items:
+        - key: .dockerconfigjson
+          path: config.json
+```
+
+check the logs 
+
+```
+kubectl logs -f kaniko
+Enumerating objects: 143, done.
+Counting objects: 100% (143/143), done.
+Compressing objects: 100% (140/140), done.
+Total 143 (delta 37), reused 0 (delta 0), pack-reused 0
+INFO[0003] Retrieving image manifest python:3.9.7-alpine3.14 
+INFO[0003] Retrieving image python:3.9.7-alpine3.14 from registry index.docker.io 
+INFO[0006] Built cross stage deps: map[]                
+INFO[0006] Retrieving image manifest python:3.9.7-alpine3.14 
+INFO[0006] Returning cached image manifest              
+INFO[0006] Executing 0 build triggers                   
+INFO[0006] Building stage 'python:3.9.7-alpine3.14' [idx: '0', base-idx: '-1'] 
+INFO[0006] Unpacking rootfs as cmd RUN pip install flask requires it. 
+INFO[0009] RUN pip install flask                        
+INFO[0009] Initializing snapshotter ...                 
+INFO[0009] Taking snapshot of full filesystem...        
+INFO[0026] Cmd: /bin/sh                                 
+INFO[0026] Args: [-c pip install flask]                 
+INFO[0026] Running: [/bin/sh -c pip install flask]      
+Collecting flask
+  Downloading flask-3.0.3-py3-none-any.whl (101 kB)
+Collecting Werkzeug>=3.0.0
+  Downloading werkzeug-3.0.3-py3-none-any.whl (227 kB)
+Collecting itsdangerous>=2.1.2
+  Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+Collecting Jinja2>=3.1.2
+  Downloading jinja2-3.1.4-py3-none-any.whl (133 kB)
+Collecting importlib-metadata>=3.6.0
+  Downloading importlib_metadata-8.0.0-py3-none-any.whl (24 kB)
+Collecting blinker>=1.6.2
+  Downloading blinker-1.8.2-py3-none-any.whl (9.5 kB)
+Collecting click>=8.1.3
+  Downloading click-8.1.7-py3-none-any.whl (97 kB)
+Collecting zipp>=0.5
+  Downloading zipp-3.19.2-py3-none-any.whl (9.0 kB)
+Collecting MarkupSafe>=2.0
+  Downloading MarkupSafe-2.1.5-cp39-cp39-musllinux_1_1_x86_64.whl (29 kB)
+Installing collected packages: zipp, MarkupSafe, Werkzeug, Jinja2, itsdangerous, importlib-metadata, click, blinker, flask
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+Successfully installed Jinja2-3.1.4 MarkupSafe-2.1.5 Werkzeug-3.0.3 blinker-1.8.2 click-8.1.7 flask-3.0.3 importlib-metadata-8.0.0 itsdangerous-2.2.0 zipp-3.19.2
+WARNING: You are using pip version 21.2.4; however, version 24.1.2 is available.
+You should consider upgrading via the '/usr/local/bin/python -m pip install --upgrade pip' command.
+INFO[0045] Taking snapshot of full filesystem...        
+INFO[0091] WORKDIR /app                                 
+INFO[0091] Cmd: workdir                                 
+INFO[0091] Changed working directory to /app            
+INFO[0091] Creating directory /app with uid -1 and gid -1 
+INFO[0091] Taking snapshot of files...                  
+INFO[0091] COPY day-01/app.py .                         
+INFO[0091] Taking snapshot of files...                  
+INFO[0091] ENTRYPOINT ["python", "app.py"]              
+INFO[0091] Pushing image to shapai/kaniko-demo-image:latest 
+INFO[0098] Pushed index.docker.io/shapai/kaniko-demo-image@sha256:620933e8b4879a9f64cdd35015524de8cda23505a0d1ca3562598ad20b348d40 
+```
