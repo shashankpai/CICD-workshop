@@ -14,7 +14,8 @@
 
 ![Build images with Docker Daemon](https://miro.medium.com/v2/resize:fit:1400/1*mMwScMsMUafCPs9iwP060Q.png)
 
-    - ### Sample Dockerfile for a Flask Application
+     #### Sample Dockerfile for a Flask Application
+
       ```Dockerfile
       # Use the official Python image from the Docker Hub
       FROM python:3.9-slim
@@ -38,7 +39,7 @@
       CMD ["python", "app.py"]
       ```
 
-    - ### Docker Build Command
+     #### Docker Build Command
       To build the Docker image for the Flask application, use the following command:
       ```sh
       docker build -t my-flask-app .
