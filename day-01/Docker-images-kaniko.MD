@@ -84,26 +84,26 @@ docker run -v /var/run/docker.sock:/var/run/docker.sock -it your-docker-image
 
 - **Others:** Kubernetes supports various other CRI-compliant runtimes like frakti (for hypervisor-based environments), Kata Containers (for secure, lightweight VM-based containers), and more.
 
-** Kaniko - What Problem kaniko is addressing **
+**Kaniko - What Problem kaniko is addressing**
 
-#### Containerized Build Process
+##### Containerized Build Process
 - Kaniko runs as a container image itself. When initiated, it creates a pod (in Kubernetes terms) or a container that executes the build process.
 
-#### No Docker Daemon Dependency
+##### No Docker Daemon Dependency
 - Kaniko doesn't require a Docker daemon (`dockerd`). Instead, it interacts directly with container registries and the filesystem to execute Dockerfile commands.
 
-#### Layered Image Building
+##### Layered Image Building
 - Similar to Docker builds, Kaniko processes each instruction in the Dockerfile to create layers of the container image.
 
-#### Secure Execution
+##### Secure Execution
 - Kaniko ensures security by running builds in an isolated environment without needing privileged access or a Docker daemon socket (`/var/run/docker.sock`).
 
-#### Technologies Used by Kaniko
+##### Technologies Used by Kaniko
 - **OCI (Open Container Initiative) Specifications:** Kaniko adheres to OCI standards for container images and uses these specifications for compatibility and interoperability with various container runtimes and registries.
 - **Google Container Tools:** Kaniko is developed and maintained by Google, leveraging their expertise in containerization and cloud-native technologies.
 - **Build Context:** Kaniko uses the provided build context (the directory containing the Dockerfile and related files) to execute build commands and create the container image.
 
-### Advantages of Using Kaniko
+##### Advantages of Using Kaniko
 - **Security:** Eliminates the need for privileged Docker daemon access, reducing potential attack surfaces and enhancing build pipeline security.
 - **Portability:** Kaniko can be used in various Kubernetes environments and other container orchestration platforms that support containerized builds.
 - **Compatibility:** Works with Dockerfiles and Dockerfile syntax, allowing developers to use familiar build processes without requiring changes.
