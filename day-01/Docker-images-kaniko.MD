@@ -10,11 +10,11 @@
 
 ### 1. Build images with and without Docker Daemon
 
-1.1 **Build images with Docker Daemon**
+**1.1 Build images with Docker Daemon**
 
 ![Build images with Docker Daemon](https://miro.medium.com/v2/resize:fit:1400/1*mMwScMsMUafCPs9iwP060Q.png)
 
-### Sample Dockerfile for a Flask Application
+#### Sample Dockerfile for a Flask Application
 
 ```Dockerfile
 # Use the official Python image from the Docker Hub
@@ -45,7 +45,7 @@ CMD ["python", "app.py"]
       docker build -t my-flask-app .
 ```
 
-1.2  **Why Use `/var/run/docker.sock`?**
+**1.2  Why Use `/var/run/docker.sock`?**
 
 - **Direct Communication**: By mounting the Docker socket into a container, the container can communicate directly with the Docker daemon of the host system. This allows the container to run Docker commands as if they were executed on the host.
 
