@@ -84,7 +84,7 @@ docker run -v /var/run/docker.sock:/var/run/docker.sock -it your-docker-image
 
 - **Others:** Kubernetes supports various other CRI-compliant runtimes like frakti (for hypervisor-based environments), Kata Containers (for secure, lightweight VM-based containers), and more.
 
-**Kaniko - What Problem kaniko is addressing**
+**1.4 Kaniko - What Problem kaniko is addressing**
 
 ##### Containerized Build Process
 - Kaniko runs as a container image itself. When initiated, it creates a pod (in Kubernetes terms) or a container that executes the build process.
@@ -110,4 +110,46 @@ docker run -v /var/run/docker.sock:/var/run/docker.sock -it your-docker-image
 
 In summary, Kaniko uses containerization techniques to provide a secure and efficient method for building container images without relying on a Docker daemon. This makes it particularly useful in Kubernetes and other cloud-native environments where security and portability are critical considerations.
 
+## 1.5 How Kaniko Builds Images
 
+**Kaniko** is designed to build container images in a secure and efficient manner, especially in environments like Kubernetes where direct access to a Docker daemon (`dockerd`) is not feasible or desired.
+
+##### Kaniko Executor Image:
+
+- Kaniko itself runs as a container image known as the Kaniko executor image (`gcr.io/kaniko-project/executor`). This image contains the necessary tools and configurations to execute Dockerfile instructions and build container images.
+- It is lightweight and designed to operate within Kubernetes or other container orchestration platforms, independent of a Docker daemon.
+
+##### Building Process with Kaniko:
+
+- **Containerized Execution**: Kaniko creates a pod (in Kubernetes terminology) or a container to perform the build process. This pod/container executes the commands specified in the Dockerfile to build the desired container image.
+- **Context and Dockerfile**: Kaniko requires a build context, typically a directory containing the Dockerfile and any necessary files (`context.tar.gz`). It uses this context to execute commands like `COPY`, `RUN`, and `ENTRYPOINT` defined in the Dockerfile.
+- **Layered Image Construction**: Similar to Docker, Kaniko builds images in layers based on the instructions in the Dockerfile, optimizing caching and reusability of intermediate layers.
+
+##### Kaniko Executor Image Arguments:
+
+- When using Kaniko, the executor image expects specific arguments to configure the build process. These commonly include:
+  - `--context`: Path to the build context (e.g., `/workspace/context`).
+  - `--dockerfile`: Path to the Dockerfile within the context (e.g., `/workspace/context/Dockerfile`).
+  - Optionally, other flags like `--destination` to specify the final image repository and tag.
+
+##### Example of a Pod Using Kaniko
+
+Here's an example YAML configuration for a Kubernetes pod that uses Kaniko to build a container image:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kaniko-build-pod
+spec:
+  containers:
+    - name: kaniko
+      image: gcr.io/kaniko-project/executor:latest
+      args: ["--context", "/workspace/context", "--dockerfile", "/workspace/context/Dockerfile"]
+      volumeMounts:
+        - name: kaniko-workspace
+          mountPath: /workspace/context
+  volumes:
+    - name: kaniko-workspace
+      emptyDir: {}
+```
