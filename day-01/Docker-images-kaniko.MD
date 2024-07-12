@@ -65,7 +65,7 @@ docker run -v /var/run/docker.sock:/var/run/docker.sock -it your-docker-image
 
 **1.3  Kubernetes removed Docker from its core**
 
-## Why Kubernetes Removed Docker from Its Core?
+#### Why Kubernetes Removed Docker from Its Core?
 
 **Container Runtime Interface (CRI):** Kubernetes introduced the Container Runtime Interface (CRI) to standardize how container runtimes interface with Kubernetes. Initially, Docker was the default runtime using the `dockerd` service and Docker API (`docker.sock`). However, Kubernetes started encouraging the use of CRI-compliant runtimes to support a broader ecosystem of container engines.
 
@@ -76,7 +76,7 @@ docker run -v /var/run/docker.sock:/var/run/docker.sock -it your-docker-image
 
 **Impact on `docker.sock` Usage:** With Docker no longer being the primary runtime in Kubernetes, using `/var/run/docker.sock` to directly communicate with Docker is not compatible with CRI-based runtimes. Kubernetes nodes typically run a CRI implementation (e.g., containerd, CRI-O), which Kubernetes components interact with instead.
 
-## Alternatives to Using Docker in Kubernetes
+#### Alternatives to Using Docker in Kubernetes
 
 - **containerd:** Developed by Docker, containerd is a lightweight container runtime that implements CRI and is designed for use with Kubernetes. It's widely adopted and maintained by the CNCF.
 
@@ -84,7 +84,7 @@ docker run -v /var/run/docker.sock:/var/run/docker.sock -it your-docker-image
 
 - **Others:** Kubernetes supports various other CRI-compliant runtimes like frakti (for hypervisor-based environments), Kata Containers (for secure, lightweight VM-based containers), and more.
 
-## Transitioning Away from `docker.sock` Usage in Kubernetes
+#### Transitioning Away from `docker.sock` Usage in Kubernetes
 
 - **Update Kubernetes Manifests:** Modify Kubernetes deployment manifests (yaml files) to specify the correct container runtime using CRI-compatible configurations (`containerRuntime: remote` or similar in `kubelet` configuration).
 
