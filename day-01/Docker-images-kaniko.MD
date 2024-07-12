@@ -84,13 +84,6 @@ docker run -v /var/run/docker.sock:/var/run/docker.sock -it your-docker-image
 
 - **Others:** Kubernetes supports various other CRI-compliant runtimes like frakti (for hypervisor-based environments), Kata Containers (for secure, lightweight VM-based containers), and more.
 
-#### Transitioning Away from `docker.sock` Usage in Kubernetes
-
-- **Update Kubernetes Manifests:** Modify Kubernetes deployment manifests (yaml files) to specify the correct container runtime using CRI-compatible configurations (`containerRuntime: remote` or similar in `kubelet` configuration).
-
-- **Tooling and Automation:** Update CI/CD pipelines, automation scripts, and tools (e.g., Helm charts) to reflect the use of CRI-compliant runtimes instead of Docker-specific configurations.
-
-- **Best Practices:** Ensure that Kubernetes configurations align with recommended practices from Kubernetes documentation and the chosen container runtime provider (e.g., containerd, CRI-O).
 
 
     
