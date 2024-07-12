@@ -44,3 +44,19 @@
       ```sh
       docker build -t my-flask-app .
       ```
+1.2 **Use of /var/run/docker.sock file in Docker**
+
+    In Docker, the `/var/run/docker.sock` file is a Unix domain socket used by the Docker daemon to listen for Docker API requests. This file allows Docker clients, such as the Docker CLI or other applications, to communicate with the Docker daemon on the host system.
+
+    ### Why Use `/var/run/docker.sock`?
+
+    - **Direct Communication**: By mounting the Docker socket into a container, the container can communicate directly with the Docker daemon of the host system. This allows the container to run Docker commands as if they were executed on the host.
+    
+    - **Container Management**: This setup is often used in CI/CD pipelines and other automation tools where containers need to build, start, stop, or manage other containers dynamically.
+
+    ### Security Considerations
+
+    - **Access Control**: Mounting the Docker socket into a container grants the container full control over the Docker daemon and, by extension, the entire host system. This can pose significant security risks if not managed properly.
+    
+    - **Best Practices**: Ensure that only trusted containers and applications have access to the Docker socket. Consider using alternative methods, such as using tools like Kaniko, which do not require Docker daemon access.
+
