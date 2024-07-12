@@ -153,3 +153,9 @@ spec:
     - name: kaniko-workspace
       emptyDir: {}
 ```
+In this example:
+
+The kaniko container runs the Kaniko executor image `gcr.io/kaniko-project/executor:latest`.
+It specifies arguments (--context and --dockerfile) to indicate where the build context and Dockerfile are located.
+A volume `kaniko-workspace` is mounted to provide the build context `/workspace/context` to Kaniko.
+Replace /workspace/context and /workspace/context/Dockerfile with your actual paths and filenames as per your project structure.
