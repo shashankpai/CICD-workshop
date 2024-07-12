@@ -63,14 +63,34 @@ Here’s an example of how you might mount the Docker socket into a container:
 
 docker run -v /var/run/docker.sock:/var/run/docker.sock -it your-docker-image
 
-#### Docker-in-Docker (DIND) vs. Mounting Docker Socket
+**1.3  Kubernetes removed Docker from its core**
 
-- **DIND**: Useful for completely isolated Docker environments where the container itself runs a separate Docker daemon.
-  
-  ```sh
-  docker run --privileged -d --name dind-container docker:dind
-  ```
+## Why Kubernetes Removed Docker from Its Core?
 
+**Container Runtime Interface (CRI):** Kubernetes introduced the Container Runtime Interface (CRI) to standardize how container runtimes interface with Kubernetes. Initially, Docker was the default runtime using the `dockerd` service and Docker API (`docker.sock`). However, Kubernetes started encouraging the use of CRI-compliant runtimes to support a broader ecosystem of container engines.
+
+**Decoupling from Docker:** Kubernetes removed direct dependencies on Docker as its default runtime due to several reasons:
+- **Flexibility:** Supporting multiple runtimes allows Kubernetes to cater to different use cases and environments beyond Docker.
+- **Standardization:** CRI allows Kubernetes to maintain a stable API for integrating with various container runtimes, not limited to Docker.
+- **Ecosystem Support:** Encourages innovation and integration of new container runtimes like containerd, CRI-O, and others.
+
+**Impact on `docker.sock` Usage:** With Docker no longer being the primary runtime in Kubernetes, using `/var/run/docker.sock` to directly communicate with Docker is not compatible with CRI-based runtimes. Kubernetes nodes typically run a CRI implementation (e.g., containerd, CRI-O), which Kubernetes components interact with instead.
+
+## Alternatives to Using Docker in Kubernetes
+
+- **containerd:** Developed by Docker, containerd is a lightweight container runtime that implements CRI and is designed for use with Kubernetes. It's widely adopted and maintained by the CNCF.
+
+- **CRI-O:** An implementation of the Kubernetes CRI to provide an integration path between OCI conformant runtimes like runc (the underlying runtime used by containerd) and Kubernetes. It's optimized for Kubernetes and supports the CRI standards.
+
+- **Others:** Kubernetes supports various other CRI-compliant runtimes like frakti (for hypervisor-based environments), Kata Containers (for secure, lightweight VM-based containers), and more.
+
+## Transitioning Away from `docker.sock` Usage in Kubernetes
+
+- **Update Kubernetes Manifests:** Modify Kubernetes deployment manifests (yaml files) to specify the correct container runtime using CRI-compatible configurations (`containerRuntime: remote` or similar in `kubelet` configuration).
+
+- **Tooling and Automation:** Update CI/CD pipelines, automation scripts, and tools (e.g., Helm charts) to reflect the use of CRI-compliant runtimes instead of Docker-specific configurations.
+
+- **Best Practices:** Ensure that Kubernetes configurations align with recommended practices from Kubernetes documentation and the chosen container runtime provider (e.g., containerd, CRI-O).
 
 
     
