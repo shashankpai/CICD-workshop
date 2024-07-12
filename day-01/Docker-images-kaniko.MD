@@ -44,7 +44,7 @@
       ```sh
       docker build -t my-flask-app .
       ```
-1.2 ### Why Use `/var/run/docker.sock`?
+1.2  *Why Use `/var/run/docker.sock`?*
 
 - **Direct Communication**: By mounting the Docker socket into a container, the container can communicate directly with the Docker daemon of the host system. This allows the container to run Docker commands as if they were executed on the host.
 
@@ -68,6 +68,7 @@ docker run -v /var/run/docker.sock:/var/run/docker.sock -it your-docker-image
   
   ```sh
   docker run --privileged -d --name dind-container docker:dind
+  ```
 
 
 
