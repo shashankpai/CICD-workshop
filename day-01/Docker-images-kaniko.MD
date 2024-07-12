@@ -51,19 +51,19 @@ CMD ["python", "app.py"]
 
 - **Container Management**: This setup is often used in CI/CD pipelines and other automation tools where containers need to build, start, stop, or manage other containers dynamically.
 
-### Security Considerations
+#### Security Considerations
 
 - **Access Control**: Mounting the Docker socket into a container grants the container full control over the Docker daemon and, by extension, the entire host system. This can pose significant security risks if not managed properly.
 
 - **Best Practices**: Ensure that only trusted containers and applications have access to the Docker socket. Consider using alternative methods, such as using tools like Kaniko, which do not require Docker daemon access.
 
-### Example Usage
+#### Example Usage
 
 Here’s an example of how you might mount the Docker socket into a container:
 
 docker run -v /var/run/docker.sock:/var/run/docker.sock -it your-docker-image
 
-### Docker-in-Docker (DIND) vs. Mounting Docker Socket
+#### Docker-in-Docker (DIND) vs. Mounting Docker Socket
 
 - **DIND**: Useful for completely isolated Docker environments where the container itself runs a separate Docker daemon.
   
