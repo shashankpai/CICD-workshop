@@ -14,37 +14,37 @@
 
 ![Build images with Docker Daemon](https://miro.medium.com/v2/resize:fit:1400/1*mMwScMsMUafCPs9iwP060Q.png)
 
-     #### Sample Dockerfile for a Flask Application
+### Sample Dockerfile for a Flask Application
 
-      ```Dockerfile
-      # Use the official Python image from the Docker Hub
-      FROM python:3.9-slim
+```Dockerfile
+# Use the official Python image from the Docker Hub
+FROM python:3.9-slim
 
-      # Set the working directory in the container
-      WORKDIR /app
+# Set the working directory in the container
+WORKDIR /app
 
-      # Copy the requirements file into the container
-      COPY requirements.txt .
+# Copy the requirements file into the container
+COPY requirements.txt .
 
-      # Install the required dependencies
-      RUN pip install --no-cache-dir -r requirements.txt
+# Install the required dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-      # Copy the rest of the application code into the container
-      COPY . .
+# Copy the rest of the application code into the container
+COPY . .
 
-      # Expose the port the app runs on
-      EXPOSE 5000
+# Expose the port the app runs on
+EXPOSE 5000
 
-      # Define the command to run the application
-      CMD ["python", "app.py"]
-      ```
+# Define the command to run the application
+CMD ["python", "app.py"]
 
-     #### Docker Build Command
+#### Docker Build Command
       To build the Docker image for the Flask application, use the following command:
-      ```sh
-      docker build -t my-flask-app .
-      ```
-1.2  *Why Use `/var/run/docker.sock`?*
+      
+sh
+      ```docker build -t my-flask-app .```
+
+1.2  **Why Use `/var/run/docker.sock`?**
 
 - **Direct Communication**: By mounting the Docker socket into a container, the container can communicate directly with the Docker daemon of the host system. This allows the container to run Docker commands as if they were executed on the host.
 
