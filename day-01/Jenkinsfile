@@ -48,7 +48,7 @@ pipeline {
       steps {
         container('git') {
           git url: 'https://github.com/shashankpai/CICD-workshop.git',
-          branch: 'master'
+          branch: 'main'
         }
       }
     }
