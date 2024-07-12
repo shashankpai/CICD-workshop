@@ -160,7 +160,7 @@ It specifies arguments (--context and --dockerfile) to indicate where the build 
 A volume `kaniko-workspace` is mounted to provide the build context `/workspace/context` to Kaniko.
 Replace /workspace/context and /workspace/context/Dockerfile with your actual paths and filenames as per your project structure.
 
-#### Sample Example of building and pushing to a docker registry using kaniko in a pod
+#### Example of building and pushing to a docker registry using kaniko in a pod
 
 
 ##### First create a kubernetes secret with docker registry credentials
