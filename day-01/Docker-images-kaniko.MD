@@ -8,10 +8,11 @@
 4. **Making use of Kaniko in Jenkins as an agent to build images**
 
 
+1. **Build images with and without Docker Daemon**
 
-**Build images with Docker Daemon**
+1.1 **Build images with Docker Daemon**
 
-
+![Build images with Docker Daemon](https://www.google.com/url?sa=i&url=https%3A%2F%2Fmedium.com%2Fgeekculture%2Fcreate-docker-images-without-docker-daemon-kaniko-847a688155a6&psig=AOvVaw1O4Q1C6JwpbPAGUiHYwCuw&ust=1720860586773000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCJiHjrWPoYcDFQAAAAAdAAAAABAE)
     - ### Sample Dockerfile for a Flask Application
       ```Dockerfile
       # Use the official Python image from the Docker Hub
