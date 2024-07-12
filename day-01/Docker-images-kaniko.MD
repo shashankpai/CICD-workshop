@@ -38,11 +38,6 @@ EXPOSE 5000
 # Define the command to run the application
 CMD ["python", "app.py"]
 
-#### Docker Build Command
-      To build the Docker image for the Flask application, use the following command:
-      
-sh
-      ```docker build -t my-flask-app .```
 
 1.2  **Why Use `/var/run/docker.sock`?**
 
