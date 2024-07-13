@@ -10,9 +10,9 @@ pipeline {
         spec:
           containers:
           - name: kubectl
-            image: bitnami/kubectl:latest
+            image: joshendriks/alpine-k8s
             command:
-            - cat
+            - /bin/cat
             tty: true 
           - name: kaniko
             image: gcr.io/kaniko-project/executor:debug
