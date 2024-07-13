@@ -69,7 +69,9 @@ pipeline {
             //sh 'sed -i "s/<TAG>/${BUILD_NUMBER}/" myweb.yaml'
             //sh 'kubectl apply -f myweb.yaml'
             sh '''
-               kubectl get pods --all-namespaces
+               kubectl get pods -n default
+               kubectl get pods -n dev
+               kubectl get pods -n prod
              '''
           //}
         }
