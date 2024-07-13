@@ -9,11 +9,6 @@ pipeline {
             app: test
         spec:
           containers:
-          - name: git
-            image: bitnami/git:latest
-            command:
-            - cat
-            tty: true
           - name: kubectl
             image: bitnami/kubectl
             command:
@@ -44,14 +39,14 @@ pipeline {
     IMAGE_TAG = "${BUILD_NUMBER}"
   }
  stages {
-    stage('Checkout SCM') {
-      steps {
-        container('git') {
-          git url: 'https://github.com/shashankpai/CICD-workshop.git',
-          branch: 'main'
-        }
-      }
-    }
+    // stage('Checkout SCM') {
+    //   steps {
+    //     container('git') {
+    //       git url: 'https://github.com/shashankpai/CICD-workshop.git',
+    //       branch: 'main'
+    //     }
+    //   }
+    // }
     // stage('Build SW'){
     //   steps {
     //     container('maven'){
