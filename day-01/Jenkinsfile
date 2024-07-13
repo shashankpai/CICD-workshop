@@ -10,7 +10,7 @@ pipeline {
         spec:
           containers:
           - name: kubectl
-            image: bitnami/kubectl
+            image: bitnami/kubectl:latest
             command:
             - cat
             tty: true 
@@ -69,8 +69,7 @@ pipeline {
             //sh 'sed -i "s/<TAG>/${BUILD_NUMBER}/" myweb.yaml'
             //sh 'kubectl apply -f myweb.yaml'
             sh '''
-               echo hello
-               kubectl get pods --all-namespaces
+               kubectl --version
              '''
          // }
         }
