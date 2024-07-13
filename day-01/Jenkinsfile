@@ -52,13 +52,13 @@ pipeline {
         }
       }
     }
-    stage('Build SW'){
-      steps {
-        container('maven'){
-          sh 'mvn -Dmaven.test.failure.ignore=true clean package'
-        }
-      }
-    }
+    // stage('Build SW'){
+    //   steps {
+    //     container('maven'){
+    //       sh 'mvn -Dmaven.test.failure.ignore=true clean package'
+    //     }
+    //   }
+    // }
     stage('Build Container Image'){
       steps {
         container('kaniko'){
