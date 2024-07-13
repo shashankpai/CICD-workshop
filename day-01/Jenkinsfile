@@ -8,6 +8,7 @@ pipeline {
           labels:
             app: test
         spec:
+          serviceAccountName: jenkins
           containers:
           - name: kubectl
             image: joshendriks/alpine-k8s
