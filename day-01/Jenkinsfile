@@ -35,7 +35,7 @@ pipeline {
   }
   environment{
     DOCKERHUB_USERNAME = "shapai"
-    APP_NAME = "kaniko-webapp-demo"
+    APP_NAME = "myapp"
     IMAGE_NAME = "${DOCKERHUB_USERNAME}" + "/" + "${APP_NAME}"
     IMAGE_TAG = "${BUILD_NUMBER}"
   }
@@ -70,9 +70,11 @@ pipeline {
             //sh 'sed -i "s/<TAG>/${BUILD_NUMBER}/" myweb.yaml'
             //sh 'kubectl apply -f myweb.yaml'
             sh '''
+               sh 'sed -i "s/<TAG>/${BUILD_NUMBER}/" myapp.yaml
                kubectl get pods -n default
                kubectl get pods -n dev
                kubectl get pods -n prod
+               sh 'kubectl apply -f myapp.yaml'
              '''
           //}
         }
