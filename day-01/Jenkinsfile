@@ -70,7 +70,7 @@ pipeline {
             //sh 'sed -i "s/<TAG>/${BUILD_NUMBER}/" myweb.yaml'
             //sh 'kubectl apply -f myweb.yaml'
             sh '''
-               sed -i "s/<TAG>/${BUILD_NUMBER}/" myapp.yaml
+               sed -i "s/<TAG>/${BUILD_NUMBER}/" day-01/myapp.yaml
                #kubectl get pods -n default
                #kubectl get pods -n dev
                #kubectl get pods -n prod
