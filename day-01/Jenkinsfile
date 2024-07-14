@@ -8,7 +8,7 @@ pipeline {
           labels:
             app: test
         spec:
-          #serviceAccountName: jenkins
+          serviceAccountName: jenkins
           containers:
           - name: kubectl
             image: joshendriks/alpine-k8s
@@ -70,11 +70,11 @@ pipeline {
             //sh 'sed -i "s/<TAG>/${BUILD_NUMBER}/" myweb.yaml'
             //sh 'kubectl apply -f myweb.yaml'
             sh '''
-               #sed -i "s/<TAG>/${BUILD_NUMBER}/" myapp.yaml
+               sed -i "s/<TAG>/${BUILD_NUMBER}/" myapp.yaml
                #kubectl get pods -n default
                #kubectl get pods -n dev
-               kubectl get pods -n prod
-               #kubectl apply -f myapp.yaml
+               #kubectl get pods -n prod
+               kubectl apply -f myapp.yaml
              '''
           //}
         }
