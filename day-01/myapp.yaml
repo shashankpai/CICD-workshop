@@ -39,9 +39,9 @@ metadata:
   namespace: dev
 spec:
   ports:
-  - port: 5000
+  - port: 8090
     protocol: TCP
     targetPort: 5000  # Assuming your app listens on port 5000
   selector:
-    app: myweb
+    app: myapp
   type: ClusterIP
