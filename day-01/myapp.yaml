@@ -37,7 +37,7 @@ metadata:
   namespace: dev
 spec:
   ports:
-  - port: 80
+  - port: 5000
     protocol: TCP
     targetPort: 5000  # Assuming your app listens on port 5000
   selector:
