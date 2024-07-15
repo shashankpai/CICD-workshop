@@ -125,4 +125,106 @@ kubectl get svc -o wide
 kubectl get nodes -o wide
 ```
 
+Another way to provide Docker registry credentials to a Kubernetes deployment is by creating and mounting a service account with the necessary image pull secret. This approach avoids adding imagePullSecrets to each deployment manually.
+
+Here's a step-by-step example of how to do this:
+
+**Create a Docker Registry Secret**
+
+First, create the Docker registry secret:
+
+bash
+Copy code
+```kubectl create secret docker-registry docker-cred \
+    --docker-server=https://index.docker.io/v1/ \
+    --docker-username=your-username \
+    --docker-password=your-password
+```
+Create a Service Account with the Image Pull Secret
+
+Create a YAML file to define a service account that uses this secret:
+
+service-account.yaml
+
+yaml
+Copy code
+```
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: my-service-account
+secrets:
+- name: docker-cred
+```
+Apply the service account configuration:
+
+bash
+Copy code
+```
+kubectl apply -f service-account.yaml
+```
+Create the Deployment Using the Service Account
+
+Define the deployment to use the service account created above:
+
+**deployment.yaml**
+
+yaml
+Copy code
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: flask
+  name: flask
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask
+  template:
+    metadata:
+      labels:
+        app: flask
+    spec:
+      serviceAccountName: my-service-account
+      containers:
+      - image: your-dockerhub-username/flask-app:1.0
+        imagePullPolicy: Always
+        name: flask
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  type: NodePort
+  selector:
+    app: flask
+  ports:
+    - port: 80
+      targetPort: 5000
+      nodePort: 30007
+```
+Apply the deployment configuration:
+
+bash
+Copy code
+```
+kubectl apply -f deployment.yaml
+```
+Verify the Deployment
+
+Ensure the deployment and services are running correctly:
+
+bash
+Copy code
+```
+kubectl get deploy
+kubectl get po -o wide
+kubectl get svc -o wide
+kubectl get nodes -o wide
+```
+By using a service account with an image pull secret, you avoid the need to specify imagePullSecrets in each deployment specification, making your configurations cleaner and easier to manage.
 
