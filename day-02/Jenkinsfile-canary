@@ -51,9 +51,6 @@ pipeline {
    stage('CanaryDeploy') {     
       steps {
         container('kubectl') {
-         // withCredentials([file(credentialsId: 'mykubeconfig', variable: 'KUBECONFIG')]) {
-            //sh 'sed -i "s/<TAG>/${BUILD_NUMBER}/" myweb.yaml'
-            //sh 'kubectl apply -f myweb.yaml'
             sh '''
                sed -i "s/<TAG>/${BUILD_NUMBER}/" day-02/canary-deploy-v2.yaml
                #kubectl get pods -n default
@@ -89,6 +86,7 @@ stage('SmokeTest') {
 }
 stage('Deploy to Prod') {     
       steps {
+        input 'Deploy to Production?'
         container('kubectl') {
          // withCredentials([file(credentialsId: 'mykubeconfig', variable: 'KUBECONFIG')]) {
             //sh 'sed -i "s/<TAG>/${BUILD_NUMBER}/" myweb.yaml'
