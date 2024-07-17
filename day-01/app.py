@@ -10,7 +10,7 @@ app = Flask(__name__)
 @app.route("/")
 def home():
     return jsonify(
-        msg="Hello there!, new version 2 You have just hit the container: "+ hostname+ " on port: "+str(app_port)
+        msg="Hello there!, new version 3 You have just hit the container: "+ hostname+ " on port: "+str(app_port)
     )
     
 if __name__ == "__main__":
