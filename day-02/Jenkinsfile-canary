@@ -66,9 +66,6 @@ pipeline {
       }
     }
 stage('SmokeTest') {
-    when {
-        branch 'master'
-    }
     steps {
         script {
             sleep(time: 5)
