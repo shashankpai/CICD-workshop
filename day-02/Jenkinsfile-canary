@@ -80,6 +80,20 @@ pipeline {
         }
       }
     }
+stage('SmokeTest') {
+            steps {
+                script {
+                    sleep (time: 5)
+                    def response = httpRequest (
+                        url: "http://canary-app.com/",
+                        timeout: 30
+                    )
+                    if (response.status != 200) {
+                        error("Smoke test against canary deployment failed.")
+                    }
+                }
+            }
+        }
 stage('Deploy to Prod') {     
       steps {
         container('kubectl') {
