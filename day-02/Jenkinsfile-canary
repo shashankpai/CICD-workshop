@@ -40,21 +40,6 @@ pipeline {
     IMAGE_TAG = "${BUILD_NUMBER}"
   }
  stages {
-    // stage('Checkout SCM') {
-    //   steps {
-    //     container('git') {
-    //       git url: 'https://github.com/shashankpai/CICD-workshop.git',
-    //       branch: 'main'
-    //     }
-    //   }
-    // }
-    // stage('Build SW'){
-    //   steps {
-    //     container('maven'){
-    //       sh 'mvn -Dmaven.test.failure.ignore=true clean package'
-    //     }
-    //   }
-    // }
     stage('Build Container Image'){
       steps {
         container('kaniko'){
@@ -81,19 +66,30 @@ pipeline {
       }
     }
 stage('SmokeTest') {
-            steps {
-                script {
-                    sleep (time: 5)
-                    def response = httpRequest (
-                        url: "http://canary-app.com/",
-                        timeout: 30
-                    )
-                    if (response.status != 200) {
-                        error("Smoke test against canary deployment failed.")
-                    }
+    when {
+        branch 'master'
+    }
+    steps {
+        script {
+            sleep(time: 5)
+            int requestCount = 10
+            boolean allRequestsSuccessful = true
+            for (int i = 0; i < requestCount; i++) {
+                def response = httpRequest(
+                    url: "http://canary-app.com/",
+                    timeout: 30
+                )
+                if (response.status != 200) {
+                    allRequestsSuccessful = false
+                    echo "Request ${i + 1} failed with status ${response.status}"
                 }
             }
+            if (!allRequestsSuccessful) {
+                error("Smoke test against canary deployment failed.")
+            }
         }
+    }
+}
 stage('Deploy to Prod') {     
       steps {
         container('kubectl') {
