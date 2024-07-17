@@ -1,0 +1,84 @@
+pipeline {
+  agent {
+    kubernetes {
+      yaml '''
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          labels:
+            app: test
+        spec:
+          serviceAccountName: jenkins
+          containers:
+          - name: kubectl
+            image: joshendriks/alpine-k8s
+            command:
+            - /bin/cat
+            tty: true 
+          - name: kaniko
+            image: gcr.io/kaniko-project/executor:debug
+            command:
+            - cat
+            tty: true
+            volumeMounts:
+            - name: kaniko-secret
+              mountPath: /kaniko/.docker
+          volumes:
+          - name: kaniko-secret
+            secret:
+              secretName: regcred
+              items:
+                - key: .dockerconfigjson
+                  path: config.json
+      '''
+    }      
+  }
+  environment{
+    DOCKERHUB_USERNAME = "shapai"
+    APP_NAME = "myapp"
+    IMAGE_NAME = "${DOCKERHUB_USERNAME}" + "/" + "${APP_NAME}"
+    IMAGE_TAG = "${BUILD_NUMBER}"
+  }
+ stages {
+    // stage('Checkout SCM') {
+    //   steps {
+    //     container('git') {
+    //       git url: 'https://github.com/shashankpai/CICD-workshop.git',
+    //       branch: 'main'
+    //     }
+    //   }
+    // }
+    // stage('Build SW'){
+    //   steps {
+    //     container('maven'){
+    //       sh 'mvn -Dmaven.test.failure.ignore=true clean package'
+    //     }
+    //   }
+    // }
+    stage('Build Container Image'){
+      steps {
+        container('kaniko'){
+          //sh "/kaniko/executor --context $WORKSPACE --destination $IMAGE_NAME:$IMAGE_TAG"
+          sh "/kaniko/executor --dockerfile `pwd`/day-01/Dockerfile --context `pwd` --destination=${IMAGE_NAME}:${IMAGE_TAG} --destination=${IMAGE_NAME}:latest"
+        }
+      }
+    }
+   stage('Deploy App to Kubernetes') {     
+      steps {
+        container('kubectl') {
+         // withCredentials([file(credentialsId: 'mykubeconfig', variable: 'KUBECONFIG')]) {
+            //sh 'sed -i "s/<TAG>/${BUILD_NUMBER}/" myweb.yaml'
+            //sh 'kubectl apply -f myweb.yaml'
+            sh '''
+               sed -i "s/<TAG>/${BUILD_NUMBER}/" day-01/myapp.yaml
+               #kubectl get pods -n default
+               #kubectl get pods -n dev
+               #kubectl get pods -n prod
+               kubectl apply -f day-01/myapp.yaml
+             '''
+          //}
+        }
+      }
+    }
+  }
+}
