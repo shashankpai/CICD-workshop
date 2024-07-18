@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
       - name: blue-green
-        image: blue-green
-        imagePullPolicy: Never
+        image: shapai/argo-app:latest
+        imagePullPolicy: Always
         env:
         - name: html_name
           value: "app-v1.html"
