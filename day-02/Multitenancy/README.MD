@@ -28,7 +28,7 @@ https://www.vcluster.com/docs/get-started
 
 ##### Comparison 
 
-![Alt text](Images/comparisonm.png)
+![Alt text](Images/comparem.png)
 
 Getting started with vcluster 
 
