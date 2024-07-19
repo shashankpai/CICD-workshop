@@ -2,33 +2,33 @@
 
 ##### What is Multtenancy
 
-![Alt text](images/Multitenancy.png)
+![Alt text](Images/Multitenancy.png)
 
 ##### Core building blocks 
 
-![Alt text](images/corem.png)
+![Alt text](Images/corem.png)
 
 ##### Challenges and Limitations
 
-![Alt text](images/challenges.png)
+![Alt text](Images/challenges.png)
 
 ##### Intro Vcluster
 
-![Alt text](images/intro-vcluster.png)
+![Alt text](Images/intro-vcluster.png)
 
 ##### Vcluster Architecture
 
-![Alt text](images/Architecturev.png)
+![Alt text](Images/Architecturev.png)
 
 https://www.vcluster.com/docs/get-started
 
 ##### Benefits Vcluster
 
-![Alt text](images/benefitsvcluster.png)
+![Alt text](Images/benefitsvcluster.png)
 
 ##### Comparison 
 
-![Alt text](images/comparisonm.png)
+![Alt text](Images/comparisonm.png)
 
 Getting started with vcluster 
 
