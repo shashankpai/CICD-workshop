@@ -64,7 +64,7 @@ pipeline {
     }
 stage('Deploy to Prod') {     
       steps {
-        input 'Deploy to Production?'
+        //input 'Deploy to Production?'
         container('kubectl') {
          // withCredentials([file(credentialsId: 'mykubeconfig', variable: 'KUBECONFIG')]) {
             //sh 'sed -i "s/<TAG>/${BUILD_NUMBER}/" myweb.yaml'
