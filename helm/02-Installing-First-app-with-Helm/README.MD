@@ -189,3 +189,205 @@ Now that the cluster setup is complete, let's proceed with installing the WordPr
 ## Installing a WordPress chart
 
 
+### Creating a Values File for Configuration
+
+You can customize the configuration of a Helm chart by providing a YAML-formatted values file. To do this, you'll first need to inspect the chart’s available values. This can be done using the `helm show values` command.
+
+Run the following command to view the configurable values for the WordPress chart:
+```bash
+$ helm show values bitnami/wordpress --version 12.1.6
+```
+
+This command will produce a lengthy list of possible values that you can customize, many of which already have default settings.
+
+As you can see, these values are used to set up a WordPress user and name your blog. To customize them, create a values file. Start by creating a new file on your machine called `wordpress-values.yaml`. Add the following content to the file:
+
+```yaml
+wordpressUsername: helm-user
+wordpressPassword: my-password
+wordpressEmail: helm-user@example.com
+wordpressFirstName: Helm_is
+wordpressLastName: Fun
+wordpressBlogName: Learn Helm!
+```
+
+Feel free to modify these values as you like. Before proceeding with the installation, there's one more important value to add to your `wordpress-values.yaml` file, as shown in the next steps.
+
+After adding this final value, your complete `wordpress-values.yaml` file should look like this:
+
+```yaml
+wordpressUsername: helm-user
+wordpressPassword: my-password
+wordpressEmail: helm-user@example.com
+wordpressFirstName: Helm_is
+wordpressLastName: Fun
+wordpressBlogName: Learn Helm!
+service:
+  type: NodePort
+```
+
+Now that your values file is ready, let's proceed with the installation.
+
+### Running the Installation
+
+To install a Helm chart, use the `helm install` command. The basic syntax is:
+
+```bash
+helm install [NAME] [CHART] [flags]
+```
+
+- **NAME**: This is the name you assign to your Helm release. A release encapsulates the Kubernetes resources installed with a chart and tracks the application's life cycle. We will delve into how releases work later in this chapter.
+
+- **CHART**: This is the name of the Helm chart you want to install. Charts from a repository can be installed using the format `<repo name>/<chart name>`.
+
+- **flags**: The flags option allows you to further customize the installation, such as defining and overriding values or specifying the namespace. You can view all available flags by running `helm install --help`. This command, like others, supports the `--help` flag to display usage information and supported options.
+
+Now that we understand how to use the `helm install` command, let's run the following command:
+
+```bash
+$ helm install wordpress bitnami/wordpress --values=wordpress-values.yaml --namespace wordpress --version 12.1.6
+```
+
+This command installs a new release called `wordpress` using the `bitnami/wordpress` Helm chart. It customizes the installation based on the values defined in the `wordpress-values.yaml` file and installs the chart in the `wordpress` namespace. The chart is deployed with version 12.1.6 as specified by the `--version` flag. If the `--version` flag is omitted, Helm will install the latest cached version of the chart.
+
+### Inspecting Your Release
+
+To inspect a Helm release and verify its installation, use the `helm list` command to list all releases in a given namespace.
+
+Run the following command to view the list of releases in the `wordpress` namespace:
+```bash
+$ helm list --namespace wordpress
+```
+You should see only one release in this namespace, providing the following details:
+- Release name
+- Namespace
+- Latest revision number
+- Timestamp of the latest revision
+- Release status
+
+To get more detailed information about the release, you can use the following commands:
+
+- **List hooks:**  
+  ```bash
+  $ helm get hooks wordpress --namespace wordpress
+  ```
+  Hooks are actions Helm performs during certain phases of the application’s life cycle. This installation did not create any hooks.
+
+- **Get manifest:**  
+  ```bash
+  $ helm get manifest wordpress --namespace wordpress
+  ```
+  This command returns the Kubernetes resources created during installation, such as Secrets, ConfigMaps, PersistentVolumeClaim, Services, Deployment, StatefulSet, and ServiceAccount.
+
+- **Get notes:**  
+  ```bash
+  $ helm get notes wordpress --namespace wordpress
+  ```
+
+- **Get values:**  
+  ```bash
+  $ helm get values wordpress --namespace wordpress
+  ```
+
+- **Get all information:**  
+  ```bash
+  $ helm get all wordpress --namespace wordpress
+  ```
+
+The `helm get manifest` command will show the Kubernetes manifests for:
+- Two Secrets (for MariaDB and WordPress credentials)
+- Two ConfigMaps (one for WordPress configuration and one for testing)
+- One PersistentVolumeClaim (for MariaDB data)
+- Two Services (for MariaDB and WordPress)
+- One Deployment (for WordPress)
+- One StatefulSet (for MariaDB)
+- One ServiceAccount (for MariaDB)
+
+This output helps you see where your values impacted the Kubernetes resources, such as setting the WordPress service type to NodePort.
+
+### Choosing Between `--set` and `--values`
+
+When installing WordPress, we used the `--values` flag to pass parameters to the Helm chart. There are two main ways to provide values:
+
+- **`--set`**: Use this flag to pass values directly from the command line. It's suitable for simple values or a few configurations. However, it can be cumbersome for complex values like lists or maps.
+
+- **`--values`**: Use this flag to specify values from a YAML file or URL. This method is preferred because it handles multiple values more easily and allows you to manage configurations in a file, which can be stored in a Source Code Management (SCM) system like Git for reproducibility.
+
+**Note**: Sensitive values, such as passwords, should not be stored in source control. For such cases, use the `--set` flag to avoid committing secrets.
+
+Other related flags include:
+
+- **`--set-file`**: Passes a file with values in `key1=val1` format.
+- **`--set-string`**: Treats all values provided in `key1=val1` format as strings.
+
+Next, let’s explore the WordPress application we just installed.
+
+### Accessing the WordPress Application
+
+The release notes for the WordPress chart provide commands to access your application. Run the following commands:
+
+For macOS or Linux:
+```bash
+export NODE_PORT=$(kubectl get --namespace wordpress -o jsonpath="{.spec.ports[0].nodePort}" services wordpress)
+export NODE_IP=$(kubectl get nodes --namespace wordpress -o jsonpath="{.items[0].status.addresses[0].address}")
+echo "WordPress URL: http://$NODE_IP:$NODE_PORT/"
+echo "WordPress Admin URL: http://$NODE_IP:$NODE_PORT/admin"
+```
+
+These commands set environment variables for the NodePort and Node IP, and then display the URLs to access WordPress and its admin interface.
+
+After defining the two environment variables based on the series of kubectl queries, the resulting
+echo commands will reveal the URLs to access WordPress. The first URL is to view the home page
+and is where visitors will access your site. The second URL is to reach the admin console, which is
+used by website administrators to configure and manage the site’s content.
+
+### Running the Upgrade
+
+The `helm upgrade` command is similar to `helm install` in syntax:
+```bash
+helm upgrade [RELEASE] [CHART] [flags]
+```
+Here, `RELEASE` is the existing release name to upgrade. The `--install` flag will install the chart if the release doesn’t exist.
+
+To upgrade the WordPress release with new values, use:
+```bash
+helm upgrade wordpress bitnami/wordpress --values wordpress-values.yaml -n wordpress --version 12.1.6
+```
+After running this command, you should see output similar to `helm install`, with the `REVISION` field updated to 2.
+
+To verify, check the WordPress pods:
+```bash
+kubectl get pods -n wordpress
+```
+New pods will appear if the pod template was modified during the upgrade. Use `helm get manifest` and `kubectl get deployment` to observe changes.
+
+### Reusing and Resetting Values During an Upgrade
+
+In addition to `--set` and `--values`, `helm upgrade` includes:
+- `--reuse-values`: Reuses the last release's values if no new values are provided.
+- `--reset-values`: Resets to default values if new values are provided.
+
+**Example 1: Upgrade without specifying values:**
+```bash
+helm upgrade wordpress bitnami/wordpress -n wordpress --version 12.1.6
+```
+Check values used:
+```bash
+helm get values wordpress -n wordpress
+```
+Values should match the previous upgrade.
+
+**Example 2: Upgrade with specific values:**
+```bash
+helm upgrade wordpress bitnami/wordpress --set replicaCount=1 --set wordpressUsername=helm-user --set wordpressPassword=my-password -n wordpress --version 12.1.6
+```
+Check values after upgrade:
+```bash
+helm get values wordpress -n wordpress
+```
+The output will show only the provided values, with others reset to defaults.
+
+**Tip:** For consistency, manage all values in a `values.yaml` file. This approach is clearer and easier to manage during upgrades.
+
+With the commands provided, you should have multiple revisions of the WordPress release. If needed, you can roll back to a stable version with your desired settings.
+
