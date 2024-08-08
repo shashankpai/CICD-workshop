@@ -341,6 +341,43 @@ echo commands will reveal the URLs to access WordPress. The first URL is to view
 and is where visitors will access your site. The second URL is to reach the admin console, which is
 used by website administrators to configure and manage the site’s content.
 
+### Upgrading the WordPress Release
+
+Upgrading a release involves modifying its values or updating the chart. In this example, we'll enhance the WordPress installation by adding new values.
+
+**Modifying the Helm Values**
+
+To improve availability, you may want to run multiple replicas of your application. The `replicaCount` value in the chart configuration controls this. To increase the number of WordPress replicas from 1 to 2, add the following to your `wordpress-values.yaml` file:
+```yaml
+replicaCount: 2
+```
+
+Next, configure resource requests. The chart’s `resources` map lets you set memory and CPU requests. Modify these values to set memory to 256Mi and CPU to 100m:
+```yaml
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 100m
+```
+
+Your updated `wordpress-values.yaml` should look like this:
+```yaml
+wordpressUsername: helm-user
+wordpressPassword: my-password
+wordpressEmail: helm-user@example.com
+wordpressFirstName: Helm_is
+wordpressLastName: Fun
+wordpressBlogName: Learn Helm!
+service:
+  type: NodePort
+replicaCount: 2
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 100m
+```
+
+After updating the `wordpress-values.yaml` file, you can proceed with the `helm upgrade` command to apply these changes.
 ### Running the Upgrade
 
 The `helm upgrade` command is similar to `helm install` in syntax:
@@ -391,3 +428,67 @@ The output will show only the provided values, with others reset to defaults.
 
 With the commands provided, you should have multiple revisions of the WordPress release. If needed, you can roll back to a stable version with your desired settings.
 
+### Rolling Back the WordPress Release
+
+Rolling back a release is useful when reverting to a previous version of your application. Here's how to roll back the WordPress release:
+
+#### Inspecting Release History
+
+Helm keeps a history of revisions for each release. Revisions track values, Kubernetes resources, and chart versions used in each release. These revisions are stored in Kubernetes Secrets by default.
+
+To list secrets and view revisions:
+```bash
+kubectl get secrets -n wordpress
+```
+
+You should see secrets like:
+- `sh.helm.release.v1.wordpress.v1`
+- `sh.helm.release.v1.wordpress.v2`
+- `sh.helm.release.v1.wordpress.v3`
+- `sh.helm.release.v1.wordpress.v4`
+
+To view the revision history:
+```bash
+helm history wordpress -n wordpress
+```
+
+This command displays each revision’s number, status, and description. 
+
+To check values for a specific revision:
+```bash
+helm get values wordpress --revision 3 -n wordpress
+```
+
+#### Performing the Rollback
+
+Use the `helm rollback` command to revert to a previous revision:
+```bash
+helm rollback wordpress 3 -n wordpress
+```
+
+After executing the rollback, you should see a new revision with a status of `deployed`. Confirm the rollback by checking the release values:
+```bash
+helm get values wordpress -n wordpress
+```
+
+#### Uninstalling the WordPress Release
+
+To uninstall and delete the WordPress release:
+```bash
+helm uninstall wordpress -n wordpress
+```
+
+Verify the release is removed:
+```bash
+helm list -n wordpress
+```
+
+Check for remaining resources:
+```bash
+kubectl get deployments -l app.kubernetes.io/name=wordpress -n wordpress
+```
+
+If a PersistentVolumeClaim remains, delete it manually:
+```bash
+kubectl delete pvc data-wordpress-mariadb-0 -n wordpress
+```
