@@ -1,16 +1,16 @@
 # Installing first wordpress app with HELM
 
 we will cover the following main topics:
-• Understanding the WordPress application
-• Finding a WordPress chart
-• Creating a Kubernetes environment
-• Installing a WordPress chart
-• Choosing between --set and --values
-• Accessing the WordPress application
-• Upgrading the WordPress release
-• Rolling back the WordPress release
-• Uninstalling the WordPress release
-• Shutting down your environment
+- Understanding the WordPress application
+- Finding a WordPress chart
+- Creating a Kubernetes environment
+- Installing a WordPress chart
+- Choosing between --set and --values
+- Accessing the WordPress application
+- Upgrading the WordPress release
+- Rolling back the WordPress release
+- Uninstalling the WordPress release
+- Shutting down your environment
 
 
 ## Understanding WordPress application
