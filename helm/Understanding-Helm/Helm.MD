@@ -236,5 +236,49 @@ different applications, where they could potentially manage multiple different d
 multiple different services, and so on. In comparing the different applications’ resource files, you may
 find large numbers of similar YAML configurations between them.
 
+### Simplified Introduction to Helm and Package Managers
 
+Over time, deploying applications on Kubernetes proved challenging due to the complexity of managing Kubernetes resources. To address these challenges, Helm, an open-source Kubernetes package manager, was developed. Helm simplifies application deployment on Kubernetes in a manner similar to how traditional package managers work on operating systems.
+
+#### How Package Managers Work
+
+Package managers like `dnf` on Fedora streamline the process of installing, upgrading, reverting, and removing software. They manage packages that include both the software and its dependencies. For example, to install the `htop` system monitor on Fedora, you’d simply run:
+
+```bash
+dnf install htop --assumeyes
+```
+
+This command instructs `dnf` to find `htop` in the Fedora repository and handle all necessary dependencies. Package managers also allow for easy upgrades, downgrades, and removal of software, making software management straightforward.
+
+#### Helm: The Kubernetes Package Manager
+
+Helm operates similarly to traditional package managers but is tailored for Kubernetes. Instead of RPM packages, Helm uses charts, which are collections of Kubernetes resource files required to deploy applications. These charts can be found in repositories, just as software packages can be found in OS repositories.
+
+For example, deploying Redis on Kubernetes using Helm is as simple as running:
+
+```bash
+helm install redis bitnami/redis --namespace=redis
+```
+
+This command installs the Redis chart from the Bitnami repository into the `redis` namespace. Helm also offers commands for upgrading (`helm upgrade`), rolling back (`helm rollback`), and uninstalling (`helm uninstall`) applications, mirroring the functionality of traditional package managers like `dnf`.
+
+#### Benefits of Using Helm
+
+Helm offers several advantages:
+
+1. **Simplifies Kubernetes Resource Management**: Helm abstracts the complexity of Kubernetes, enabling developers to deploy applications like WordPress by simply searching for existing charts, without needing extensive Kubernetes knowledge.
+
+2. **Maintains Revision History**: Helm keeps a history of application revisions, allowing users to roll back to any previous state with ease.
+
+3. **Dynamic Resource Configuration**: Helm introduces values and templates, enabling parameterization of Kubernetes resources. This reduces boilerplate code and makes managing applications more flexible.
+
+4. **Synchronizes Local and Live States**: Helm manages the intricate details of Kubernetes resources, allowing users to focus on local configuration while Helm handles updates and synchronization.
+
+5. **Automated Lifecycle Management**: Helm supports lifecycle hooks for automating tasks like backups, rollbacks, and environment validation, simplifying the management of Kubernetes applications.
+
+### Summary
+
+In summary, Helm is a powerful tool that simplifies the management of Kubernetes applications, offering an experience similar to traditional package managers. By using Helm, teams can efficiently manage the full lifecycle of applications, from installation to rollback, with minimal Kubernetes expertise required.
+
+Next, we’ll explore installing Helm and setting up an environment to work with Helm charts.
 
